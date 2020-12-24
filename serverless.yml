@@ -85,4 +85,4 @@ provider:
   runtime: python3.6
   stage: stage
 resources: []
-service: mason-serverless
+service: measures-api
