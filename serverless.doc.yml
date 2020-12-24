@@ -28,7 +28,7 @@ endpoints:
       application/json: createSensorRequest
     summary: Activate a new IDO sensor
   hello:
-    description: Extended desccription of hello
+    description: This endpoint says hello.
     methodResponses:
     - responseBody:
         description: Description of the response of hello
