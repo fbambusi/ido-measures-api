@@ -1,0 +1,41 @@
+components:
+  requestBodies: {}
+  schemas:
+    helloResponse:
+      properties:
+        name:
+          type: string
+        sender:
+          description: The sender of the message.
+          type: string
+      required:
+      - name
+      - sender
+      type: object
+  securitySchemes: {}
+info:
+  description: IDO API to manage sensors.
+  title: IDO
+  version: '1'
+openapi: 3.0.0
+paths:
+  /mason/hello:
+    get:
+      description: Extended desccription of hello
+      operationId: hello
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                name: ciaone
+                sender: hello2
+              schema:
+                $ref: '#/components/schemas/helloResponse'
+          description: Description of the response of hello
+      summary: Brief desccription of hello
+servers:
+- description: prod
+  url: apiv1.ido.wiseair-api.com
+- description: stage
+  url: apiv1-stage.ido.wiseair-api.com

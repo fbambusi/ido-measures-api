@@ -1,0 +1,32 @@
+Resources:
+  idoImportSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: '2376'
+          ToPort: '2376'
+          CidrIp: "0.0.0.0/0"
+      Tags:
+        - Key: Project
+          Value: Wiseair
+
+  idoImporter:
+    Type: AWS::EC2::Instance
+    Properties:
+      CpuOptions:
+        CoreCount: 2
+        ThreadsPerCore: 2
+      EbsOptimized: true
+      KeyName: ido-gitlab-runner
+      ImageId: ami-05a0da6b76f9120e4
+      InstanceInitiatedShutdownBehavior: stop
+      InstanceType: t3.xlarge
+      Monitoring: true
+      SecurityGroupIds:
+        - !GetAtt idoImportSecurityGroup.GroupId

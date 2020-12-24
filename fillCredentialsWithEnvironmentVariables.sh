@@ -1,0 +1,1 @@
+sed -i "s/PLACEHOLDER_FOR_TOKEN/$WEATHER_TOKEN/" src/dataStructures/WeatherApiWrapper.py

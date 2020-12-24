@@ -1,0 +1,54 @@
+stages:
+  - tests
+  - deploy
+  - deploy-prod
+
+variables:
+  AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+  AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+
+test:
+  image: python:latest
+  stage: tests
+  services:
+    - name: elasticsearch:7.9.3
+      alias: elasticsearch
+      command: [ "bin/elasticsearch", "-Ediscovery.type=single-node" ]
+  before_script:
+    - pip3 install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
+  script:
+    - AWS_DEFAULT_REGION=eu-south-1 python -m unittest
+
+deploy:
+  image: nikolaik/python-nodejs:python3.6-nodejs10
+  stage: deploy
+  before_script:
+    - echo $PWD
+    - npm i
+    - npm install -g serverless@1.67.3
+    - npm install --save serverless-python-requirements
+    - sls plugin install -n  serverless-domain-manager
+
+  script:
+    #- sed -i "s/###COMMIT-SHA###/$CI_COMMIT_SHORT_SHA/g" version.py
+    #- npm ls fs-extra
+    - SLS_DEBUG=* serverless deploy --stage stage --verbose
+  only:
+    - stage
+
+deploy-prod:
+  image: nikolaik/python-nodejs:python3.6-nodejs10
+  stage: deploy-prod
+  before_script:
+    - npm config set prefix /usr/local
+    - npm install -g serverless
+    - sls plugin install -n  serverless-domain-manager
+    - sls plugin install -n serverless-python-requirements
+  script:
+    - SLS_DEBUG=* serverless deploy --stage prod --verbose
+  only:
+    - tags
+    - master

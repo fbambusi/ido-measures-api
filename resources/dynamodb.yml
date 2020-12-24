@@ -1,0 +1,28 @@
+Resources:
+    elasticsearchCluster:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: hashKey
+            AttributeType: S
+          - AttributeName: sortKey
+            AttributeType: S
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: hashKey
+            KeyType: HASH
+          - AttributeName: sortKey
+            KeyType: RANGE
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: true
+        TableName: ido-weather-cache-${file(serverless.yml):custom.myStage}
+        Tags:
+          - Key: project
+            Value: wiseair
+          - Key: functionality
+            Value: weather_cache
+        TimeToLiveSpecification:
+          AttributeName: expiresAt
+          Enabled: true
+

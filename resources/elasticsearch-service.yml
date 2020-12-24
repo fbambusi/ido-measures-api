@@ -1,0 +1,16 @@
+Resources:
+    elasticsearchCluster:
+      Type: AWS::Elasticsearch::Domain
+      Properties:
+        DomainName: ido-TO_DELETE-${file(serverless.yml):custom.myStage}
+        ElasticsearchVersion: 7.7
+        ElasticsearchClusterConfig:
+          InstanceType: r5.large.elasticsearch
+          InstanceCount: 1
+          DedicatedMasterEnabled: false
+          ZoneAwarenessEnabled: false
+          WarmEnabled: false
+        EBSOptions:
+          EBSEnabled: true
+          VolumeType: "gp2"
+          VolumeSize: ${file(serverless.yml):custom.myStage}

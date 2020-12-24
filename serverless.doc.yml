@@ -1,0 +1,38 @@
+documentation:
+  description: IDO API to manage sensors.
+  models:
+  - contentType: application/json
+    description: description of IDO sensor, with its ID
+    name: createSensorResponse
+    schema: ${file(schemas/responses/createSensorResponse.json)}
+  - contentType: application/json
+    description: description of IDO sensor, without its ID
+    name: createSensorRequest
+    schema: ${file(schemas/requests/createSensorRequest.json)}
+  - contentType: application/json
+    description: description of hello
+    name: helloResponse
+    schema: ${file(schemas/responses/helloResponse.json)}
+  title: IDO
+  version: '1'
+endpoints:
+  createSensor:
+    description: Activate a new IDO sensor, which will be allowed to create measures.
+    methodResponses:
+    - responseBody:
+        description: Description of IDO sensor, with its uniquely assigned ID
+      responseModels:
+        application/json: createSensorResponse
+      statusCode: 200
+    requestModels:
+      application/json: createSensorRequest
+    summary: Activate a new IDO sensor
+  hello:
+    description: Extended desccription of hello
+    methodResponses:
+    - responseBody:
+        description: Description of the response of hello
+      responseModels:
+        application/json: helloResponse
+      statusCode: 200
+    summary: Brief desccription of hello
