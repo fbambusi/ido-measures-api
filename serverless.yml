@@ -7,13 +7,20 @@ custom:
     prod: arn:aws:cognito-idp:eu-central-1:129843607226:userpool/eu-central-1_85ktnn3ef
     stage: arn:aws:cognito-idp:eu-central-1:129843607226:userpool/eu-central-1_sPMQnKBGz
   customDomain:
-    basePath: mason
+    basePath: v1/measures
     domainName: ${self:custom.domains.${self:custom.myStage}}
     stage: ${self:custom.myStage}
+    #hostedZoneId: eu-central-1
+    #certificateName: ${self:custom.myEnvironment.CERTIFICATE_NAME.${self:custom.myStage}}
+    certificateArn: ${self:custom.myEnvironment.CERTIFICATE_ARN.${self:custom.myStage}}
+
   documentation: ${file(serverless.doc.yml):documentation}
   domains:
-    prod: apiv1.ido.wiseair-api.com
-    stage: apiv1-stage.ido.wiseair-api.com
+    #prod: apiv1.ido.wiseair-api.com
+    #stage: apiv1-stage.ido.wiseair-api.com
+    prod: www.checkyoo.com
+    stage: www.checkyoo.com
+
   myEnvironment:
     COGNITO_POOL:
       prod: arn:aws:cognito-idp:eu-central-1:129843607226:userpool/eu-central-COGNITO_PROD
@@ -24,6 +31,11 @@ custom:
     ES_ENDPOINT:
       prod: ES_ENDPOINT_PROD
       stage: ES_ENDPOINT_STAGE
+    CERTIFICATE_ARN:
+      prod:  arn:aws:acm:us-east-1:129843607226:certificate/ffdf0a75-24f1-4685-842b-072a7b06b5aa
+      stage:  arn:aws:acm:us-east-1:129843607226:certificate/ffdf0a75-24f1-4685-842b-072a7b06b5aa
+      #prod: arn:aws:acm:us-east-1:129843607226:certificate/05f82b65-87b0-47e4-85f1-d53afed47bd7
+      #stage: arn:aws:acm:us-east-1:129843607226:certificate/de692105-4935-4e10-be90-2be988f71c70
   myStage: ${opt:stage, self:provider.stage}
   pythonRequirements:
     fileName: requirements.txt
@@ -49,7 +61,7 @@ package:
 plugins:
 - serverless-python-requirements
 - serverless-openapi-documentation
-- serverless-domain-manager
+#- serverless-domain-manager
 - serverless-api-gateway-caching
 - serverless-deployment-bucket
 provider:
