@@ -54,7 +54,7 @@ plugins:
 - serverless-deployment-bucket
 provider:
   deploymentBucket:
-    name: wiseair-serverless-deployment-bucket
+    name: ido-deployment-bucket-eu-central-1
     serverSideEncryption: AES256
   environment:
     COGNITO_POOL: ${self:custom.cognitoUserPool}
@@ -62,16 +62,6 @@ provider:
     ES_ENDPOINT: ${self:custom.myEnvironment.ES_ENDPOINT.${self:custom.myStage}}
     STAGE_NAME: ${self:custom.myStage}
   iamRoleStatements:
-  - Action:
-    - dynamodb:DescribeTable
-    - dynamodb:Query
-    - dynamodb:Scan
-    - dynamodb:GetItem
-    - dynamodb:PutItem
-    - dynamodb:UpdateItem
-    - dynamodb:DeleteItem
-    Effect: Allow
-    Resource: arn:aws:dynamodb:eu-south-1:*:*
   - Action:
     - ses:SendEmail
     Condition:
@@ -81,7 +71,7 @@ provider:
     Effect: Allow
     Resource: arn:aws:ses:eu-west-1:129843607226:identity/software.issues@wiseair.vision
   name: aws
-  region: eu-south-1
+  region: eu-central-1
   runtime: python3.6
   stage: stage
 resources: []
