@@ -2,37 +2,46 @@ documentation:
   description: IDO API to manage sensors.
   models:
   - contentType: application/json
-    description: description of IDO sensor, with its ID
-    name: createSensorResponse
-    schema: ${file(schemas/responses/createSensorResponse.json)}
-  - contentType: application/json
-    description: description of IDO sensor, without its ID
-    name: createSensorRequest
-    schema: ${file(schemas/requests/createSensorRequest.json)}
-  - contentType: application/json
-    description: description of hello
-    name: helloResponse
-    schema: ${file(schemas/responses/helloResponse.json)}
+    description: A list of measures, with some metadata.
+    name: queryMeasuresResponse
+    schema: ${file(schemas/responses/queryMeasuresResponse.json)}
   title: IDO
   version: '1'
 endpoints:
-  createSensor:
-    description: Activate a new IDO sensor, which will be allowed to create measures.
+  queryMeasures:
+    summary: Get all the measures compliant with specific criteria.
     methodResponses:
     - responseBody:
-        description: Description of IDO sensor, with its uniquely assigned ID
+        description: Description of the response of querymeasures
       responseModels:
-        application/json: createSensorResponse
+        application/json: queryMeasuresResponse
       statusCode: 200
-    requestModels:
-      application/json: createSensorRequest
-    summary: Activate a new IDO sensor
-  hello:
-    description: This endpoint says hello.
-    methodResponses:
-    - responseBody:
-        description: Description of the response of hello
-      responseModels:
-        application/json: helloResponse
-      statusCode: 200
-    summary: Brief desccription of hello
+    description: Fetch measures according to the specified criteria. Measures
+      may be filtered by location, geohash, time interval and sensor id. In case multiple conditions are set, they are
+      associated using the "and" operator. I.e., it is possible to obtain all the measures of sensor x within time
+      interval t, but not the measures of sensor x OR the measures in time interval t. For the latter situation,
+      two calls are needed.
+    queryParams:
+      start_datetime:
+        description: ISO8061 UTC datetime that sets the beginning of the interval
+          to which measures must belong.
+        type: string
+      end_datetime:
+        description: ISO8061 UTC datetime that sets the end of the interval to which
+          measures must belong.
+        type: string
+      geohash:
+        description: The geohash of the zone whose measures are needed. All the measures inside the geohash are
+          returned.
+        type: string
+      latitude:
+        description: Latitude of the point whose measures is requested. The service returns all the measures
+          within a 10 km radius.
+        type: number
+      longitude:
+        description: Longitude of the point whose measures are requested. The service returns all the measures
+          within a 10 km radius.
+        type: number
+      sensor_id:
+        description: The identifier of the sensor whose measures are needed. It is a string in the form "/sensors/xxx-yyyyy".
+        type: string

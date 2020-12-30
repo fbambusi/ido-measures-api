@@ -1,16 +1,212 @@
 components:
   requestBodies: {}
   schemas:
-    helloResponse:
+    queryMeasuresResponse:
       properties:
-        name:
-          type: string
-        sender:
-          description: The sender of the message.
-          type: string
+        data:
+          items:
+            properties:
+              diagnostic:
+                description: Quantities from which it is possible to extract the health
+                  state of a sensor. Each quantity is expressed using a number and
+                  a unit of measurement.
+                properties:
+                  battery:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  connecting_time:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: integer
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  measuring_time:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: integer
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  rssi:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                required:
+                - battery
+                - connecting_time
+                - measuring_time
+                - rssi
+                type: object
+              display_address:
+                type: string
+              location:
+                properties:
+                  latitude:
+                    type: number
+                  location_type:
+                    type: string
+                  longitude:
+                    type: number
+                required:
+                - latitude
+                - longitude
+                type: object
+              sensor_id:
+                description: The path where it is possible to find information about
+                  the sensor which recorded this measure. A string in the form '/sensors/<SHORTENED_SENSOR_ID>'.
+                type: string
+              valid_at:
+                description: ISO8601-compliant datetime string.
+                type: string
+              values:
+                description: Physical quantities at the moment and in the position
+                  when a measure was recorded. Each entry expresses a physical quantity
+                  using a number and a unit of measurement.
+                properties:
+                  cloud_coverage:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  pm1:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  pm10:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  pm2p5:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  pm4:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  pressure:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  rain_last_1h:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  relative_humidity:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  temperature:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  wind_direction:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                  wind_speed:
+                    properties:
+                      unit:
+                        type: string
+                      value:
+                        type: number
+                    required:
+                    - unit
+                    - value
+                    type: object
+                required:
+                - pm1
+                - pm10
+                - pm2p5
+                - pm4
+                type: object
+            required:
+            - location
+            - valid_at
+            - values
+            type: object
+          type: array
       required:
-      - name
-      - sender
+      - data
       type: object
   securitySchemes: {}
 info:
@@ -19,23 +215,118 @@ info:
   version: '1'
 openapi: 3.0.0
 paths:
-  /mason/hello:
+  /measures/:
     get:
-      description: Extended desccription of hello
-      operationId: hello
+      description: Fetch measures according to the specified criteria. Measures may
+        be filtered by location, geohash, time interval and sensor id. In case multiple
+        conditions are set, they are associated using the "and" operator. I.e., it
+        is possible to obtain all the measures of sensor x within time interval t,
+        but not the measures of sensor x OR the measures in time interval t. For the
+        latter situation, two calls are needed.
+      operationId: queryMeasures
+      parameters:
+      - description: ISO8061 UTC datetime that sets the beginning of the interval
+          to which measures must belong.
+        in: query
+        name: start_datetime
+        schema:
+          type: string
+      - description: ISO8061 UTC datetime that sets the end of the interval to which
+          measures must belong.
+        in: query
+        name: end_datetime
+        schema:
+          type: string
+      - description: The geohash of the zone whose measures are needed. All the measures
+          inside the geohash are returned.
+        in: query
+        name: geohash
+        schema:
+          type: string
+      - description: Latitude of the point whose measures is requested. The service
+          returns all the measures within a 10 km radius.
+        in: query
+        name: latitude
+        schema:
+          type: number
+      - description: Longitude of the point whose measures are requested. The service
+          returns all the measures within a 10 km radius.
+        in: query
+        name: longitude
+        schema:
+          type: number
+      - description: The identifier of the sensor whose measures are needed. It is
+          a string in the form "/sensors/xxx-yyyyy".
+        in: query
+        name: sensor_id
+        schema:
+          type: string
       responses:
         '200':
           content:
             application/json:
               example:
-                name: ciaone
-                sender: hello2
+                data:
+                - diagnostic:
+                    battery:
+                      unit: v
+                      value: 3.64
+                    connecting_time:
+                      unit: ms
+                      value: 5526
+                    measuring_time:
+                      unit: ms
+                      value: 11321
+                    rssi:
+                      unit: dbm
+                      value: -56.0
+                  display_address: Antonio Panizzi
+                  location:
+                    latitude: 45.452341638193
+                    location_type: ON_ROAD
+                    longitude: 9.1372738294363
+                  sensor_id: /sensors/ari-1067
+                  valid_at: '2020-12-29T01:30:18Z'
+                  values:
+                    cloud_coverage:
+                      unit: pc
+                      value: 75.0
+                    pm1:
+                      unit: ug/m3
+                      value: 30.59
+                    pm10:
+                      unit: ug/m3
+                      value: 39.28
+                    pm2p5:
+                      unit: ug/m3
+                      value: 35.86
+                    pm4:
+                      unit: ug/m3
+                      value: 38.71
+                    pressure:
+                      unit: hpa
+                      value: 990.0
+                    rain_last_1h:
+                      unit: mm
+                      value: 0.0
+                    relative_humidity:
+                      unit: pc
+                      value: 100.0
+                    temperature:
+                      unit: celsius
+                      value: -1.14
+                    wind_direction:
+                      unit: deg
+                      value: 0.0
+                    wind_speed:
+                      unit: m/s
+                      value: 0.5
               schema:
-                $ref: '#/components/schemas/helloResponse'
-          description: Description of the response of hello
-      summary: Brief desccription of hello
+                $ref: '#/components/schemas/queryMeasuresResponse'
+          description: Description of the response of querymeasures
+      summary: Get all the measures compliant with specific criteria.
 servers:
 - description: prod
-  url: apiv1.ido.wiseair-api.com
+  url: api.ido.wiseair-api.com
 - description: stage
   url: apiv1-stage.ido.wiseair-api.com

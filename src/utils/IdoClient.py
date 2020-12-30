@@ -35,14 +35,17 @@ class IdoClient(object):
         print("ID token:", resp['AuthenticationResult']['IdToken'])
         self.id_token=resp['AuthenticationResult']['IdToken']
 
-    def authenticated_get(self,url):
+    def authenticated_get(self,url,api_key=None):
         """
         Perform a GET request, signing it with the internal bearer token
         :param url:
         :return:
         """
+        headers = {"Authorization": "Bearer " + self.id_token}
+        if api_key is not None:
+            headers["x-api-key"]=api_key
         resp = requests.get(url=url,
-                            headers={"Authorization": "Bearer " + self.id_token})
+                            headers=headers)
         return resp.content
 
     def authenticated_post(self,url,payload):

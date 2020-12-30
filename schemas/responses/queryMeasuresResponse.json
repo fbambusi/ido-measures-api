@@ -1,0 +1,300 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "values": {
+            "description": "Physical quantities at the moment and in the position when a measure was recorded. Each entry expresses a physical quantity using a number and a unit of measurement.",
+            "type": "object",
+            "properties": {
+              "pm1": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "pm2p5": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "pm4": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "pm10": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "relative_humidity": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "temperature": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "pressure": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "rain_last_1h": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "wind_speed": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "wind_direction": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "cloud_coverage": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              }
+            },
+            "required": [
+              "pm1",
+              "pm10",
+              "pm2p5",
+              "pm4"
+            ]
+          },
+          "diagnostic": {
+            "description": "Quantities from which it is possible to extract the health state of a sensor. Each quantity is expressed using a number and a unit of measurement.",
+            "type": "object",
+            "properties": {
+              "rssi": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "measuring_time": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "integer"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "connecting_time": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "integer"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              },
+              "battery": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "unit",
+                  "value"
+                ]
+              }
+            },
+            "required": [
+              "battery",
+              "connecting_time",
+              "measuring_time",
+              "rssi"
+            ]
+          },
+          "sensor_id": {
+            "description": "The path where it is possible to find information about the sensor which recorded this measure. A string in the form '/sensors/<SHORTENED_SENSOR_ID>'.",
+            "type": "string"
+          },
+          "valid_at": {
+            "description": "ISO8601-compliant datetime string.",
+            "type": "string"
+          },
+          "display_address": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "latitude": {
+                "type": "number"
+              },
+              "longitude": {
+                "type": "number"
+              },
+              "location_type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "latitude",
+              "longitude"
+            ]
+          }
+        },
+        "required": [
+          "location",
+          "valid_at",
+          "values"
+        ]
+      }
+    }
+  },
+  "required": [
+    "data"
+  ]
+}

@@ -1,3 +1,4 @@
+app: ido
 custom:
   apiGatewayCaching:
     enabled: true
@@ -7,47 +8,58 @@ custom:
     prod: arn:aws:cognito-idp:eu-central-1:129843607226:userpool/eu-central-1_85ktnn3ef
     stage: arn:aws:cognito-idp:eu-central-1:129843607226:userpool/eu-central-1_sPMQnKBGz
   customDomain:
-    basePath: v1/measures
+    basePath: measures
+    certificateArn: ${self:custom.myEnvironment.CERTIFICATE_ARN.${self:custom.myStage}}
     domainName: ${self:custom.domains.${self:custom.myStage}}
     stage: ${self:custom.myStage}
-    #hostedZoneId: eu-central-1
-    #certificateName: ${self:custom.myEnvironment.CERTIFICATE_NAME.${self:custom.myStage}}
-    certificateArn: ${self:custom.myEnvironment.CERTIFICATE_ARN.${self:custom.myStage}}
-
   documentation: ${file(serverless.doc.yml):documentation}
   domains:
-    #prod: apiv1.ido.wiseair-api.com
-    #stage: apiv1-stage.ido.wiseair-api.com
-    prod: www.checkyoo.com
-    stage: www.checkyoo.com
-
+    prod: api.ido.wiseair-api.com
+    stage: apiv1-stage.ido.wiseair-api.com
   myEnvironment:
+    ADMIN_API_KEY_NAME:
+      prod: ido-admin-key-prod
+      stage: ido-admin-key-stage
+    ADMIN_API_KEY_USAGE_PLAN:
+      prod: "frankfurt-measures-api-admin-prod"
+      stage: "frankfurt-measures-api-admin-stage"
+    CERTIFICATE_ARN:
+      prod: arn:aws:acm:us-east-1:129843607226:certificate/dbdda76e-6c5c-4916-83ca-b595fd4026ff
+      stage: arn:aws:acm:us-east-1:129843607226:certificate/92cd0158-b795-4d4b-98d9-aca8b5438dcb
     COGNITO_POOL:
-      prod: arn:aws:cognito-idp:eu-central-1:129843607226:userpool/eu-central-COGNITO_PROD
-      stage: arn:aws:cognito-idp:eu-central-1:129843607226:userpool/eu-central-COGNITO_STAGE
+      prod: arn:aws:cognito-idp:eu-central-1:129843607226:userpool/eu-central-1_85ktnn3ef
+      stage: arn:aws:cognito-idp:eu-central-1:129843607226:userpool/eu-central-1_sPMQnKBGz
     DATABASE_TABLE:
       prod: FAKE_PROS
       stage: FAKE_STAGE
     ES_ENDPOINT:
       prod: ES_ENDPOINT_PROD
       stage: ES_ENDPOINT_STAGE
-    CERTIFICATE_ARN:
-      prod:  arn:aws:acm:us-east-1:129843607226:certificate/ffdf0a75-24f1-4685-842b-072a7b06b5aa
-      stage:  arn:aws:acm:us-east-1:129843607226:certificate/ffdf0a75-24f1-4685-842b-072a7b06b5aa
-      #prod: arn:aws:acm:us-east-1:129843607226:certificate/05f82b65-87b0-47e4-85f1-d53afed47bd7
-      #stage: arn:aws:acm:us-east-1:129843607226:certificate/de692105-4935-4e10-be90-2be988f71c70
+    SENSOR_PAIRINGS_TOPIC_ARN:
+      prod: arn:aws:sns:eu-south-1:129843607226:ido-sensor-pairings-prod
+      stage: arn:aws:sns:eu-south-1:129843607226:ido-sensor-pairings-stage
   myStage: ${opt:stage, self:provider.stage}
   pythonRequirements:
     fileName: requirements.txt
+  apiKeys:
+    - name: ${self:custom.myEnvironment.ADMIN_API_KEY_NAME.${self:custom.myStage}}
+      usagePlan:
+        name: ${self:custom.myEnvironment.ADMIN_API_KEY_USAGE_PLAN.${self:custom.myStage}}
+      deleteAtRemoval: false
 functions:
-  hello:
+  queryMeasures:
     events:
     - http:
+        authorizer:
+          arn: ${self:custom.myEnvironment.COGNITO_POOL.${self:custom.myStage}}
+          name: authorizer
         cors: true
-        documentation: ${file(serverless.doc.yml):endpoints.hello}
+        documentation: ${file(serverless.doc.yml):endpoints.queryMeasures}
         method: get
-        path: hello
-    handler: src/functions/hello.lambdaHandler
+        path: /
+        private: true
+    handler: src/functions/queryMeasures.lambdaHandler
+org: wiseair
 package:
   exclude:
   - mason-venv/**
@@ -61,9 +73,10 @@ package:
 plugins:
 - serverless-python-requirements
 - serverless-openapi-documentation
-#- serverless-domain-manager
+- serverless-domain-manager
 - serverless-api-gateway-caching
 - serverless-deployment-bucket
+- serverless-add-api-key
 provider:
   deploymentBucket:
     name: ido-deployment-bucket-eu-central-1
@@ -88,4 +101,3 @@ provider:
   stage: stage
 resources: []
 service: measures-api
-app: ido
